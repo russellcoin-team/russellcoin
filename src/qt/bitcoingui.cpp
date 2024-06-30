@@ -781,7 +781,7 @@ void BitcoinGUI::gotoExplorerPage()
 
 void BitcoinGUI::gotoExplorerPage1()
 {
-    QUrl AuthorUrl("http://block.Russellcoin.com/");
+    QUrl AuthorUrl("https://block.russellcoin.net/");
     QDesktopServices::openUrl(AuthorUrl);
 }
 

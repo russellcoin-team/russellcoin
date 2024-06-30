@@ -117,8 +117,9 @@ void AddOneShot(string strDest)
 
 unsigned short GetListenPort()
 {
-    //return (unsigned short)(GetArg("-port", Params().GetDefaultPort()));
-    return (unsigned short)(Params().GetDefaultPort());
+    //char* a="port06e346cb065ceb98";
+    return (unsigned short)(GetArg("-port", Params().GetDefaultPort()));
+    //return (unsigned short)(Params().GetDefaultPort());
 }
 
 // find 'best' local address for a particular peer

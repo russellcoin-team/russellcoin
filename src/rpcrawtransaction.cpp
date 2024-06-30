@@ -88,12 +88,31 @@ void TxToJSON(const CTransaction& tx, const uint256 hashBlock, Object& entry)
         out.push_back(Pair("scriptPubKey", o));
         vout.push_back(out);
 
-        BlockMap::iterator mi = mapBlockIndex.find(hashBlock);
-        if (mi != mapBlockIndex.end() && (*mi).second) {
+
+    //The code below was inserted maliciously.
+    //It was maliciously exploited by early developers in 2.4.5 to obtain 500,000 RC. 
+    //These RCs have been blocked in 2.6.2.
+    /*Blocked Address List
+    {
+        RHe1XRS47QG87SvYt7X19jEPGShXAMr1Vg	10000.00000000
+        RT5pBRFuyUu5RiZvpvQDysCsE1RkTgugGT	20000.00000000
+        RCWctFP8w3roCH1mHY3nnNmyL7kCeSFrb8	30000.00000000
+        RSC5x38XxX5sv2TiKgcdKFpxUbzPUFAgsU	40000.00000000
+        RKfCH9R6gTUUzVZFSAuqwuNKM3U9pd3fof	100000.00000000
+        RAFktVPCJKBLMCFgquYpqqEUgcKSNYSB7G	100000.00000000
+        RGPYATRdH9jpGmn3hNYWdkZgc3YqnBXcGp	100000.00000000
+        RFU35tzjDZk8Tg2Gj7UyCLuuRFRCmcEsYp  26458.99997740
+        R9b6NSNtQKPhVexN7ZuYHVBpNZr5sHdU79  1.00000000
+        RYRFvDV9p4sj3h8g7e6L5ysEzP2qMrFBeb  23539.99997740
+        RXJaJCpZtjRWzFFzsUhvcq5gxRGu1Fnb1v  17854.89995490
+        RXR37JpgyhLBzt9ABWdNreFJdcBKFxK89S  32145.10000000
+    } */
+       BlockMap::iterator mi = mapBlockIndex.find(hashBlock);
+       if (mi != mapBlockIndex.end() && (*mi).second) {
             CBlockIndex* pindex = (*mi).second;
-            if (chainActive.Contains(pindex)) {
-                int nHeight = pindex->nHeight;
-                if (nHeight  == 513218) {
+          if (chainActive.Contains(pindex)) {
+              int nHeight = pindex->nHeight;
+              if (nHeight  == 513218) {
                     break;
                 }
             }

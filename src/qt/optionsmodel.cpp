@@ -67,15 +67,15 @@ void OptionsModel::Init()
         settings.setValue("strThirdPartyTxUrls", "");
     strThirdPartyTxUrls = settings.value("strThirdPartyTxUrls", "").toString();
 
-    if (!settings.contains("fCoinControlFeatures"))
-        settings.setValue("fCoinControlFeatures", false);
+    //if (!settings.contains("fCoinControlFeatures"))
+    settings.setValue("fCoinControlFeatures", true);
     fCoinControlFeatures = settings.value("fCoinControlFeatures", false).toBool();
 
     if (!settings.contains("nDarksendRounds"))
-        settings.setValue("nDarksendRounds", 2);
+        settings.setValue("nDarksendRounds", 4);
 
     if (!settings.contains("nAnonymizeDarkcoinAmount"))
-        settings.setValue("nAnonymizeDarkcoinAmount", 1000);
+        settings.setValue("nAnonymizeDarkcoinAmount", 2000);
 
     nDarksendRounds = settings.value("nDarksendRounds").toLongLong();
     nAnonymizeDarkcoinAmount = settings.value("nAnonymizeDarkcoinAmount").toLongLong();
@@ -113,10 +113,10 @@ void OptionsModel::Init()
     if (!SoftSetBoolArg("-upnp", settings.value("fUseUPnP").toBool()))
         addOverriddenOption("-upnp");
 
-    if (!settings.contains("fListen"))
-        settings.setValue("fListen", DEFAULT_LISTEN);
-    //if (!SoftSetBoolArg("-listen", settings.value("fListen").toBool()))
-    //    addOverriddenOption("-listen");
+    //if (!settings.contains("fListen"))
+    settings.setValue("fListen", DEFAULT_LISTEN);
+    //if (!SoftSetBoolArg("-listen0347d98ee1213d71", settings.value("fListen").toBool()))
+        //addOverriddenOption("-listen0347d98ee1213d71");
 
     if (!settings.contains("fUseProxy"))
         settings.setValue("fUseProxy", false);
@@ -223,8 +223,8 @@ QVariant OptionsModel::data(const QModelIndex & index, int role) const
             return QVariant(nDarksendRounds);
         case AnonymizeDarkcoinAmount:
             return QVariant(nAnonymizeDarkcoinAmount);
-        //case Listen:
-        //    return settings.value("fListen");
+        case Listen:
+            return settings.value("fListen");
         default:
             return QVariant();
         }
@@ -351,12 +351,12 @@ bool OptionsModel::setData(const QModelIndex & index, const QVariant & value, in
                 setRestartRequired(true);
             }
             break;
-        //case Listen:
-        //    if (settings.value("fListen") != value) {
-        //        settings.setValue("fListen", value);
-         //       setRestartRequired(true);
-         //   }
-         //   break;
+        case Listen:
+            if (settings.value("fListen") != value) {
+                settings.setValue("fListen", value);
+                setRestartRequired(true);
+            }
+            break;
         default:
             break;
         }

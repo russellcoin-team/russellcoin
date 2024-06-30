@@ -1537,11 +1537,11 @@ double ConvertBitsToDouble(unsigned int nBits)
 int64_t GetBlockValue(int nBits, int nHeight, const CAmount& nFees)
 {
     int64_t nSubsidy = 20 * COIN;
-	if (nHeight >= 132000)
+    if (nHeight >= 132000)
 		nSubsidy = 10 * COIN; 
-	if (nHeight >= 264000)
+    if (nHeight >= 264000)
 		nSubsidy = 5 * COIN; 
-	if (nHeight >= 396000)
+    if (nHeight >= 396000)
 		nSubsidy = 2.5 * COIN; 
     if (nHeight >= 792000)
 		nSubsidy = 1.25 * COIN; 
@@ -2080,8 +2080,10 @@ bool ConnectBlock(const CBlock& block, CValidationState& state, CBlockIndex* pin
     int64_t nTime1 = GetTimeMicros(); nTimeConnect += nTime1 - nTimeStart;
     LogPrint("bench", "      - Connect %u transactions: %.2fms (%.3fms/tx, %.3fms/txin) [%.2fs]\n", (unsigned)block.vtx.size(), 0.001 * (nTime1 - nTimeStart), 0.001 * (nTime1 - nTimeStart) / block.vtx.size(), nInputs <= 1 ? 0 : 0.001 * (nTime1 - nTimeStart) / (nInputs-1), nTimeConnect * 0.000001);
 
-    if (pindex->pprev->nHeight < 513215 || pindex->pprev->nHeight > 513230){
+
         if(!IsBlockValueValid(block, GetBlockValue(pindex->pprev->nBits, pindex->pprev->nHeight, nFees))){
+		if (pindex->pprev->nHeight != 513217 ){ 
+			return error("IsBlockValueValid() : coinbase pays too much");
             return state.DoS(100,
                              error("ConnectBlock() : coinbase pays too much (actual=%d vs limit=%d)",
                                    block.vtx[0].GetValueOut(), GetBlockValue(pindex->pprev->nBits, pindex->pprev->nHeight, nFees)),
@@ -2867,6 +2869,11 @@ bool CheckBlockHeader(const CBlockHeader& block, CValidationState& state, bool f
         return state.Invalid(error("CheckBlockHeader() : block timestamp too far in the future"),
                              REJECT_INVALID, "time-too-new");
 
+    // Check nVersion
+    if (block.GetBlockTime() > 1605937051 && block.nVersion < 6)
+         return state.DoS(50, error("CheckBlockHeader() : proof of work failed"),
+                         REJECT_INVALID, "high-hash");
+                         
     return true;
 }
 
@@ -2971,7 +2978,7 @@ bool CheckBlock(const CBlock& block, CValidationState& state, bool fCheckPOW, bo
 //                return error("CheckBlock() : CheckTransaction failed");
 
         // Check transactions
-        BOOST_FOREACH(const CTransaction& tx, block.vtx){
+        BOOST_FOREACH(const CTransaction& tx, block.vtx)
             if (!CheckTransaction(tx, state))
                 return error("CheckBlock() : CheckTransaction failed");
 
